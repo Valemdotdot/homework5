@@ -55,4 +55,20 @@ void CPU::printRegs() const {
 void CPU::step() {
     uint32_t instruction = fetch();
     DecodedInstruction d = decode(instruction);
+
+    executeInstruction(d);
+
+    regs[0] = 0;
+}
+
+void CPU::executeInstruction(const DecodedInstruction& d) {
+    if (d.opcode == 0x13 && d.funct3 == 0x0) {
+        // ADDI
+        regs[d.rd] = regs[d.rs1] + d.imm;
+        pc += 4;
+    } else {
+        std::cout << "Instruccion no soportada: 0x"
+                  << std::hex << d.instruction
+                  << std::dec << "\n";
+    }
 }

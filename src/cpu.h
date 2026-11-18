@@ -1,8 +1,8 @@
-
 #ifndef CPU_H
 #define CPU_H
 
 #include "memory.h"
+#include "decoder.h"
 #include <cstdint>
 
 class CPU {
@@ -24,6 +24,7 @@ public:
     void printPC() const;
     void printRegs() const;
     void step();
+    void executeInstruction(const DecodedInstruction& d);
 };
 
 #endif
