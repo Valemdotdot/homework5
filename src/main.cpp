@@ -23,6 +23,10 @@ int main(int argc, char* argv[]) {
 
     cpu.printPC();
     cpu.printRegs();
+    cpu.step();
+
+    cpu.printPC();
+    cpu.printRegs();
 
     uint32_t instr = cpu.fetch();
 
