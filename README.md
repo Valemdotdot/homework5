@@ -1,59 +1,76 @@
-# Toy Simulator
 
-Simulador para un ISA ficticio de 16 bits implementado en C++.
+# Simulador RISC-V RV32I
 
-## Especificación del ISA
+Simulador del conjunto de instrucciones RISC-V de 32 bits (RV32I), desarrollado en C++.
 
-Este es un ISA de 16 bits, word-addressable.
+## Descripción
 
-- **Addressing**: Word-addressable.
-- **Registros**: 4 registros de propósito general de 16 bits: `r0`, `r1`, `r2`, `r3`.
+El simulador permite cargar programas compilados en formato binario, ejecutar instrucciones RISC-V y consultar el estado del procesador.
 
-### Formato de instrucción
+### Instrucciones implementadas
 
-Cada instrucción es un word (16 bits) con el siguiente formato:
+| Tipo | Instrucciones |
+|---|---|
+| Aritméticas y lógicas | `add`, `sub`, `and`, `or`, `xor`, `sll`, `srl`, `sra`, `slt`, `sltu` |
+| Inmediatas | `addi`, `andi`, `ori`, `xori`, `slli`, `srli`, `srai`, `slti`, `sltiu` |
+| Carga | `lb`, `lh`, `lw`, `lbu`, `lhu` |
+| Almacenamiento | `sb`, `sh`, `sw` |
+| Saltos condicionales | `beq`, `bne`, `blt`, `bge`, `bltu`, `bgeu` |
+| Saltos | `jal`, `jalr` |
+| Tipo U | `lui`, `auipc` |
 
-```
-Bits:  15-12 | 11-10 | 9-8  | 7-6  | 5-0
-       opcode   rd     rs1    rs2    imm
-```
-
-Los campos `rd`, `rs1`, `rs2` son índices a registros (2 bits, rango 0–3).
-
-El campo `imm` se usa como valor inmediato sin signo. En saltos (`jmp`, `jnz`, `jz`) se interpreta con signo para realizar saltos relativos hacia adelante y atrás (+-32 de rango).
-
-### Tabla de opcodes
-
-| Opcode | Mnemónico          | Operación                          |
-| ------ | ------------------ | ---------------------------------- |
-| `0x0`  | `nop`              | Ninguna.                           |
-| `0x1`  | `mvi rd, imm`      | `rd = imm`                         |
-| `0x2`  | `ld rd, (rs1)`     | `rd = memory[rs1]`                 |
-| `0x3`  | `st rs2, (rs1)`    | `memory[rs1] = rs2`                |
-| `0x4`  | `jmp imm`          | `pc = pc + (i8)imm`                |
-| `0x5`  | `jnz rs1, imm`     | `if (rs1 != 0) pc = pc + (i8)imm`  |
-| `0x6`  | `jz rs1, imm`      | `if (rs1 == 0) pc = pc + (i8)imm`  |
-| `0x7`  | -                  | _No implementado._                 |
-| `0x8`  | `add rd, rs1, rs2` | `rd = rs1 + rs2`                   |
-| `0x9`  | `sub rd, rs1, rs2` | `rd = rs1 - rs2`                   |
-| `0xA`  | `and rd, rs1, rs2` | `rd = rs1 & rs2`                   |
-| `0xB`  | `or rd, rs1, rs2`  | `rd = rs1 \| rs2`                  |
-| `0xC`  | `mov rd, rs1`      | `rd = rs1`                         |
-| `0xD`  | `in rd`            | Toma un input y lo guarda en `rd`. |
-| `0xE`  | `out rs2`          | Produce un output de valor `rs2`.  |
-| `0xF`  | `halt`             | Detiene la ejecución.              |
-
-## Entorno de simulación
-
-El ISA se simula bajo una memoria plana de 64K words. El programa se carga a partir del address 0.
 
 ## Uso
 
-```bash
-cmake -S . -B build
-cmake --build build
+Para ejecutar el simulador:
 
-build/toy-simulator <archivo>
+```bash
+./sim programa.bin
 ```
 
-El archivo binario debe ser un volcado raw de words de 16 bits (endianness nativa del host).
+### Comandos disponibles
+
+| Comando | Descripción |
+|---|---|
+| `pc` | Muestra el contador de programa |
+| `regs` | Muestra todos los registros |
+| `regs x1 x2` | Muestra registros específicos |
+| `step` | Ejecuta una instrucción |
+| `run N` | Ejecuta hasta N instrucciones |
+| `mem DIRECCION N` | Muestra N bytes de memoria |
+| `reset` | Reinicia la CPU y recarga el programa |
+| `help` | Muestra los comandos disponibles |
+| `exit` | Finaliza el simulador |
+
+## Pruebas realizadas
+
+Se verificó el funcionamiento del simulador utilizando 4 programas:
+
+| Programa | Resultado esperado |
+|---|---|
+| `riscvtest.bin` | Almacena el valor 25 en la dirección `0x64` |
+| `quicksort.bin` | Ordena el arreglo `{6, 4, 3, 2, 1, 8, 9}` |
+| `symmetric.bin` | Devuelve `x10 = 1`, indicando que el árbol es simétrico |
+| `fibonacci.bin` | Calcula los primeros diez términos de Fibonacci, obteniendo `x2 = 34` |
+
+### Ejemplo de ejecución
+
+```bash
+./sim riscvtest.bin
+```
+
+Dentro del simulador:
+
+```text
+run 100
+mem 0x64 4
+pc
+exit
+```
+
+Resultado:
+
+```text
+0x00000064: 19 00 00 00
+PC = 0x00000050
+```
