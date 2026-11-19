@@ -1,4 +1,3 @@
-
 #ifndef MEMORY_H
 #define MEMORY_H
 
@@ -13,6 +12,7 @@ private:
 public:
     explicit Memory(uint32_t size);
 
+    void clear();
     bool loadBinary(const std::string& filename, uint32_t startAddress);
 
     uint8_t read8(uint32_t address) const;

@@ -3,9 +3,14 @@
 #include <fstream>
 #include <iostream>
 #include <stdexcept>
+#include <algorithm>
 
 Memory::Memory(uint32_t size) {
     data.resize(size, 0);
+}
+
+void Memory::clear() {
+    std::fill(data.begin(), data.end(), 0);
 }
 
 bool Memory::loadBinary(const std::string& filename, uint32_t startAddress) {
@@ -64,15 +69,20 @@ void Memory::write8(uint32_t address, uint8_t value) {
 
 
 void Memory::write16(uint32_t address, uint16_t value) {
+    if (address >= data.size() || data.size() - address < 2) {
+        throw std::out_of_range("Escritura de 16 bits fuera de memoria");
+    }
     write8(address, value & 0xFF);
     write8(address + 1, (value >> 8) & 0xFF);
 }
 
 
 void Memory::write32(uint32_t address, uint32_t value) {
+    if (address >= data.size() || data.size() - address < 4) {
+        throw std::out_of_range("Escritura de 32 bits fuera de memoria");
+    }
     write8(address, value & 0xFF);
     write8(address + 1, (value >> 8) & 0xFF);
     write8(address + 2, (value >> 16) & 0xFF);
     write8(address + 3, (value >> 24) & 0xFF);
 }
-

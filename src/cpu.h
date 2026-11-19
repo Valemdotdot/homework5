@@ -26,6 +26,13 @@ public:
     void step();
     void executeInstruction(const DecodedInstruction& d);
     void executeIType(const DecodedInstruction& d);
+    void executeRType(const DecodedInstruction& d);
+    void executeLoadType(const DecodedInstruction& d);
+    void executeStoreType(const DecodedInstruction& d);
+    void executeBType(const DecodedInstruction& d);
+    void executeJType(const DecodedInstruction& d);
+    void executeJALR(const DecodedInstruction& d);
+    void executeUType(const DecodedInstruction& d);
 };
 
 #endif
