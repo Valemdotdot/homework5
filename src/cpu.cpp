@@ -61,14 +61,29 @@ void CPU::step() {
     regs[0] = 0;
 }
 
+
 void CPU::executeInstruction(const DecodedInstruction& d) {
-    if (d.opcode == 0x13 && d.funct3 == 0x0) {
-        // ADDI
-        regs[d.rd] = regs[d.rs1] + d.imm;
-        pc += 4;
+    if (d.opcode == 0x13) {
+        executeIType(d);
     } else {
         std::cout << "Instruccion no soportada: 0x"
                   << std::hex << d.instruction
                   << std::dec << "\n";
+    }
+}
+
+
+
+void CPU::executeIType(const DecodedInstruction& d) {
+    if (d.funct3 == 0x0) {
+        // ADDI
+        regs[d.rd] = regs[d.rs1] + d.imm;
+        pc += 4;
+    } else if (d.funct3 == 0x7) {
+        // ANDI
+        regs[d.rd] = regs[d.rs1] & d.imm;
+        pc += 4;
+    } else {
+        std::cout << "Instruccion Tipo I no soportada\n";
     }
 }

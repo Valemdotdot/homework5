@@ -25,6 +25,7 @@ public:
     void printRegs() const;
     void step();
     void executeInstruction(const DecodedInstruction& d);
+    void executeIType(const DecodedInstruction& d);
 };
 
 #endif

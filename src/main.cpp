@@ -23,6 +23,8 @@ int main(int argc, char* argv[]) {
 
     cpu.printPC();
     cpu.printRegs();
+
+    cpu.step();
     cpu.step();
 
     cpu.printPC();
