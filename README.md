@@ -19,15 +19,6 @@ El simulador permite cargar programas compilados en formato binario, ejecutar in
 | Saltos | `jal`, `jalr` |
 | Tipo U | `lui`, `auipc` |
 
-
-## Uso
-
-Para ejecutar el simulador:
-
-```bash
-./sim programa.bin
-```
-
 ### Comandos disponibles
 
 | Comando | Descripción |
